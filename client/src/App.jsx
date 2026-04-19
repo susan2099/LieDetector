@@ -91,7 +91,10 @@ function App() {
   }, [])
 
   async function handleMicClick() {
-    if (recording) return
+    if (recording) {
+      handleStop()
+      return
+    }
     stoppingRef.current = false
     setRecording(true)
     setAnalysis(null)
@@ -150,11 +153,15 @@ function App() {
   return (
     <div className="app" style={{ borderTop: `4px solid ${borderColor}`, transition: 'border-color 1s ease' }}>
       <header className="hero">
-        <h1>
-          <span>BeSafe</span>
-          <span>Grandma</span>
-        </h1>
-        <p className="hero-subtitle">{recording ? 'Listening for scam signals' : 'Tap to analyze the call'}</p>
+        <div className="hero-brand">
+          <img
+            className="hero-logo"
+            src="/grandma-icon.svg"
+            alt="BeSafeGrandma logo"
+          />
+          <h1>BeSafeGrandma</h1>
+        </div>
+        <p className="hero-tagline">Keeping your loved ones safe from phone scams, one call at a time.</p>
       </header>
 
       <section className="mic-section">
@@ -167,21 +174,27 @@ function App() {
               src="/microphone.png"
               alt="Microphone"
               onClick={handleMicClick}
-              style={{ cursor: recording ? 'default' : 'pointer' }}
+              style={{ cursor: 'pointer' }}
             />
           </div>
         </div>
         <div className="mic-controls">
-          <p className="tap-label">{recording ? 'Recording...' : 'Tap to start'}</p>
-          {recording && (
-            <button className="stop-btn" onClick={handleStop}>Stop & Analyze</button>
-          )}
+          <div className={`status-chip ${recording ? 'live' : ''}`}>
+            <span className="status-dot" />
+            <span>{recording ? 'Live listening' : 'Ready to analyze'}</span>
+          </div>
+          <p className="mic-subtitle">{recording ? 'Listening for scam signals' : 'Tap to analyze the call'}</p>
         </div>
       </section>
 
       <section className="dashboard-grid">
         <div className="risk-meter-card panel-card">
-          <h2>Scam Risk</h2>
+          <div className="card-head">
+            <h2>Scam Risk</h2>
+            {analysis && config && (
+              <span className={`card-pill ${analysis.riskLevel}`}>{config.label}</span>
+            )}
+          </div>
           {analysis && config ? (
             <>
               <div className="risk-meter">
@@ -206,7 +219,12 @@ function App() {
         </div>
 
         <div className="card transcript-card panel-card">
-          <h2>Live Transcript</h2>
+          <div className="card-head">
+            <h2>Live Transcript</h2>
+            <span className={`card-pill ${recording ? 'live' : ''}`}>
+              {recording ? 'Live' : 'Idle'}
+            </span>
+          </div>
           <p>
             {showTranscript
               ? (
@@ -227,11 +245,19 @@ function App() {
       {analysis && (
         <section className="bottom-panel">
           <div className="card reasoning-card">
-            <h2>Why It&apos;s A Scam</h2>
+            <div className="card-head">
+              <h2>Why It&apos;s A Scam</h2>
+              <span className="card-pill neutral">AI summary</span>
+            </div>
             <p>{analysis.summary}</p>
           </div>
         </section>
       )}
+
+      <footer className="app-footer" role="contentinfo">
+        <p>Built for citrushack &apos;26</p>
+        <p>Made with care for the people who raised us</p>
+      </footer>
     </div>
   )
 }

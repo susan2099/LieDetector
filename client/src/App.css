@@ -13,28 +13,31 @@
   padding: 6px 10px 10px;
 }
 
+.hero-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-logo {
+  width: 66px;
+  height: 66px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
 .hero h1 {
-  font-size: 44px;
+  font-size: 64px;
   margin: 0;
-  letter-spacing: -0.9px;
-  font-weight: 800;
-  line-height: 1;
-  font-family: 'Avenir Next', 'SF Pro Display', 'Segoe UI', sans-serif;
-  color: #1f2937;
-  position: relative;
-  display: inline-block;
+  letter-spacing: -1.2px;
+  font-weight: 600;
+  line-height: 0.95;
+  font-family: 'Inter', 'Avenir Next', 'SF Pro Display', 'Segoe UI', sans-serif;
+  color: #111827;
   animation: titleFadeIn 420ms ease-out;
 }
 
-.hero h1 span {
-  display: block;
-}
-
-.hero h1 span + span {
-  margin-top: 2px;
-}
-
-.hero-subtitle {
+.hero-tagline {
   margin-top: 10px;
   font-size: 19px;
   color: #616a76;
@@ -152,6 +155,7 @@
   padding: 28px 32px;
   width: 100%;
   margin-top: 32px;
+  border: 1px solid #eceff3;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
@@ -186,6 +190,7 @@
   padding: 28px 32px;
   width: 100%;
   margin-top: 32px;
+  border: 1px solid #eceff3;
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
@@ -308,6 +313,109 @@
   margin-top: 16px;
 }
 
+.mic-subtitle {
+  margin: 0;
+  font-size: 17px;
+  color: #616a76;
+  letter-spacing: 0.3px;
+  font-weight: 500;
+  font-family: 'Avenir Next', 'SF Pro Text', 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #d9dee7;
+  background: #f8fafc;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4b5563;
+  letter-spacing: 0.2px;
+}
+
+.status-chip.live {
+  border-color: #fecaca;
+  background: #fff1f2;
+  color: #b91c1c;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #6b7280;
+}
+
+.status-chip.live .status-dot {
+  background: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-head h2 {
+  margin: 0;
+  text-align: left;
+}
+
+.card-pill {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  color: #4b5563;
+  background: #f9fafb;
+}
+
+.card-pill.live {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fff1f2;
+}
+
+.card-pill.low {
+  border-color: #bbf7d0;
+  color: #15803d;
+  background: #f0fdf4;
+}
+
+.card-pill.medium {
+  border-color: #fde68a;
+  color: #a16207;
+  background: #fefce8;
+}
+
+.card-pill.high {
+  border-color: #fed7aa;
+  color: #c2410c;
+  background: #fff7ed;
+}
+
+.card-pill.critical {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fff1f2;
+}
+
+.card-pill.neutral {
+  border-color: #cbd5e1;
+  color: #334155;
+  background: #f8fafc;
+}
+
 .stop-btn {
   padding: 10px 24px;
   font-size: 14px;
@@ -347,10 +455,19 @@
   text-align: left;
 }
 
+.transcript-card p,
+.reasoning-card p {
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 12px;
+}
+
 .pending-analysis {
-  color: #86868b;
+  border-top: 1px dashed #e5e7eb;
+  padding-top: 12px;
+  color: #3a3a3c;
   font-size: 15px;
-  text-align: center;
+  line-height: 1.75;
+  text-align: left;
   margin-top: 12px;
 }
 
@@ -369,18 +486,45 @@
   text-align: left;
 }
 
+.app-footer {
+  width: min(1120px, 100%);
+  margin-top: 28px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.app-footer p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 14px;
+  letter-spacing: 0.2px;
+}
+
+.app-footer p + p {
+  margin-top: 2px;
+}
+
 @media (max-width: 900px) {
   .app {
     padding: 28px 16px 48px;
   }
 
   .hero h1 {
-    font-size: 37px;
+    font-size: 42px;
   }
 
-  .hero-subtitle {
+  .hero-logo {
+    width: 48px;
+    height: 48px;
+  }
+
+  .hero-tagline {
     font-size: 17px;
     letter-spacing: 0.3px;
+  }
+
+  .mic-subtitle {
+    font-size: 16px;
   }
 
   .dashboard-grid {
