@@ -59,3 +59,14 @@ We learned that trust is just as important as technology. Users need to understa
 Next, we plan to find a way to turn this into a native, cross-platform mobile application and add features like automatic scam call blocking and an emergency alert feature to notify trusted contacts. Our goal is to make BeSafeGrandma a standard layer of protection, so answering a call never feels like a risk.
 
 ## Built With
+elevenlabs
+express.js
+geminiapi
+gemma
+javascript
+ollama
+python
+react
+typescript
+vite
+websocket
