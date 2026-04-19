@@ -1,16 +1,34 @@
-# React + Vite
+# LieDetector
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Real-time call transcription with ElevenLabs + scam likelihood analysis using Gemini.
 
-Currently, two official plugins are available:
+## Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `server/`: Node.js backend (token generation + Gemini analysis)
+- `client/`: Vite React frontend
+- `client/src/`: frontend source code
 
-## React Compiler
+## Server Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Copy `server/.env.example` to `server/.env`
+2. Fill in:
+	- `ELEVENLABS_API_KEY`
+	- `GEMINI_API_KEY`
+	- optional `PORT` (default `3001`)
+3. Install dependencies and run:
 
-## Expanding the ESLint configuration
+```bash
+cd server
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Client Setup
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+Vite proxies `/scribe-token` and `/api/*` requests to `http://localhost:3001`.

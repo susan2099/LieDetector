@@ -271,3 +271,11 @@
   color: #86868b;
   font-style: italic;
 }
+
+.error-text {
+  color: #dc2626;
+  font-size: 13px;
+  text-align: center;
+  max-width: 540px;
+  line-height: 1.4;
+}
