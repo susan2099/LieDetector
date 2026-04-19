@@ -18,6 +18,40 @@ async function analyzeTranscript(transcript) {
   return res.json()
 }
 
+function normalizeAnalysisResponse(raw) {
+  if (!raw || typeof raw !== 'object') return null
+
+  const score = Number(raw.percentage ?? raw.scam_likelihood_score ?? 0)
+  const percentage = Number.isFinite(score) ? Math.max(0, Math.min(100, Math.round(score))) : 0
+
+  const riskLevel = raw.riskLevel ?? (
+    percentage >= 85 ? 'critical'
+      : percentage >= 60 ? 'high'
+        : percentage >= 30 ? 'medium'
+          : 'low'
+  )
+
+  const flaggedWords = Array.isArray(raw.flaggedWords)
+    ? raw.flaggedWords
+    : Array.isArray(raw.critical_indicators)
+      ? raw.critical_indicators
+      : []
+
+  const summary = typeof raw.summary === 'string' && raw.summary.trim()
+    ? raw.summary
+    : typeof raw.reasoning_summary === 'string'
+      ? raw.reasoning_summary
+      : ''
+
+  return {
+    ...raw,
+    percentage,
+    riskLevel,
+    flaggedWords,
+    summary,
+  }
+}
+
 const riskConfig = {
   low:      { label: 'Low',      position: '12.5%', color: '#22c55e', tooltip: 'No significant signs of deception detected' },
   medium:   { label: 'Medium',   position: '37.5%', color: '#eab308', tooltip: 'Some suspicious patterns identified' },
@@ -39,6 +73,7 @@ function highlightTranscript(text, flaggedWords) {
 function App() {
   const [recording, setRecording] = useState(false)
   const [analysis, setAnalysis] = useState(null)
+  const [staleTranscript, setStaleTranscript] = useState('')
 
   const analysisIntervalRef = useRef(null)
   const transcriptRef = useRef('')
@@ -74,6 +109,8 @@ function App() {
     .join(' ')
   const sessionPartialText = recording ? scribe.partialTranscript : ''
   const fullTranscript = sessionCommittedText + (sessionPartialText ? ' ' + sessionPartialText : '')
+  const activeTranscript = fullTranscript.trim()
+  const displayTranscript = activeTranscript || staleTranscript
 
   // keep a ref of latest live transcript (committed + partial) for interval access
   useEffect(() => {
@@ -98,6 +135,7 @@ function App() {
     stoppingRef.current = false
     setRecording(true)
     setAnalysis(null)
+    setStaleTranscript('')
     transcriptRef.current = ''
     sessionStartIndexRef.current = scribe.committedTranscripts.length
 
@@ -127,7 +165,8 @@ function App() {
 
       try {
         const result = await analyzeTranscript(latestTranscript)
-        if (result) setAnalysis(result)
+        const normalized = normalizeAnalysisResponse(result)
+        if (normalized) setAnalysis(normalized)
       } catch (e) {
         console.error('Analyze error:', e)
       }
@@ -137,10 +176,13 @@ function App() {
   function handleStop() {
     stoppingRef.current = true
     stopAnalysisPolling()
+    const transcriptAtStop = transcriptRef.current.trim()
+    if (transcriptAtStop) {
+      setStaleTranscript(transcriptAtStop)
+    }
     scribe.disconnect()
     setRecording(false)
     recordingRef.current = false
-    transcriptRef.current = ''
     setTimeout(() => {
       stoppingRef.current = false
     }, 300)
@@ -148,7 +190,7 @@ function App() {
 
   const config = analysis ? riskConfig[analysis.riskLevel] : null
   const borderColor = config ? config.color : 'transparent'
-  const showTranscript = fullTranscript.trim() !== ''
+  const showTranscript = displayTranscript.trim() !== ''
 
   return (
     <div className="app" style={{ borderTop: `4px solid ${borderColor}`, transition: 'border-color 1s ease' }}>
@@ -230,11 +272,8 @@ function App() {
               ? (
                 <>
                   {analysis
-                    ? highlightTranscript(sessionCommittedText, analysis.flaggedWords)
-                    : sessionCommittedText}
-                  {sessionPartialText && (
-                    <span className="partial"> {sessionPartialText}</span>
-                  )}
+                    ? highlightTranscript(displayTranscript, analysis.flaggedWords)
+                    : displayTranscript}
                 </>
               )
               : 'Waiting for transcript...'}
